@@ -7,6 +7,8 @@ namespace AsocialMedia\AllegroApi;
 /**
  * Used namespaces
  */
+
+use AsocialMedia\AllegroApi\Exceptions\ExceptionFactory;
 use RuntimeException;
 
 /**
@@ -360,24 +362,18 @@ class AllegroRestApi
             )
         );
 
-        // Getting result from API
-        $response = json_decode(file_get_contents(
-            (stristr($resource, 'http') !== false 
-                ? $resource 
-                : $this->getUrl() . '/' . ltrim($resource, '/')
-            ), 
-            false, 
+        $raw = file_get_contents(
+            stripos($resource, 'http') !== false ? $resource  : $this->getUrl() . '/' . ltrim($resource, '/'),
+            false,
             stream_context_create($options)
-        ));
+        );
+
+        // Getting result from API
+        $response = json_decode($raw);
         
         // We have found an error in response
-        if (isset($response->errors) || isset($response->error_description)) {
-
-            // Throwing an exception
-            throw new RuntimeException(
-                'An error has occurred: ' . print_r($response, true),
-                $this->getResponseCode($http_response_header)
-            );
+        if (isset($response->errors) || isset($response->error)) {
+            ExceptionFactory::throw( $this->getResponseCode($http_response_header), $response );
         }
         
         // Checking if our response is a valid object

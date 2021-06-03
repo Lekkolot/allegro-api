@@ -23,6 +23,8 @@ abstract class BaseException extends \Exception
         {
             parent::__construct( $response->errors[0]->userMessage, $code, $previous );
             $this->errors = $response->errors;
+        }elseif( !empty($response->error) ){
+            parent::__construct( $response->error, $code, $previous );
         }else{
             parent::__construct( $message, $code, $previous );
         }

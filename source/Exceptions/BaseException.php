@@ -17,9 +17,9 @@ abstract class BaseException extends \Exception
      * @param Throwable|null $previous
      * @param $response
      */
-    public function __construct( $message = "", $code = 0, Throwable $previous = null, $response)
+    public function __construct( $message = "", $code = 0, Throwable $previous = null, $response = null)
     {
-        if( !empty($response->errors) )
+        if( $response && !empty($response->errors) )
         {
             parent::__construct( $response->errors[0]->userMessage, $code, $previous );
             $this->errors = $response->errors;

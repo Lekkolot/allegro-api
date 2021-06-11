@@ -8,9 +8,9 @@ class UnauthorizedException extends BaseException
 {
     protected $error_description;
 
-    public function __construct( $message = "", $code = 0, Throwable $previous = null, $response)
+    public function __construct( $message = "", $code = 0, Throwable $previous = null, $response = null )
     {
-        if( !empty($response->error) )
+        if( $response && !empty($response->error) )
         {
             parent::__construct( $response->error, $code, $previous );
             $this->error_description = $response->error_description;
